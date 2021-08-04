@@ -29,7 +29,7 @@ int isSign(char c)
 		return 1;
 	return 0;
 }
-//expression validator (except for unknown characters and parenthesis mismatch)
+//expression validator
 bool isExpression(string expression) 
 {
 	string num = "";
