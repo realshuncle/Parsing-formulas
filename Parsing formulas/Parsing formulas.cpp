@@ -453,17 +453,9 @@ int main()
 		try
 		{
 			b = ExpressionToRPN(expression);
-		}
-		catch (const char* a)
-		{
-			cout << a << endl;
-			continue;
-		}
-		a.Create(b);
-		b.Print();
-		a.Print();
-		try 
-		{
+			a.Create(b);
+			b.Print();
+			a.Print();
 			cout << a.Calculate() << endl;
 		}
 		catch (const char* a)
