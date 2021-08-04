@@ -28,7 +28,7 @@ Then we build the tree recursively:
 	   -
 	  / \
 	 *  d
-	/ \
+		/ \
        +   c
       / \
      a   b
