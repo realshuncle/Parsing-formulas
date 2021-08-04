@@ -29,7 +29,7 @@ Then we build the tree recursively:
 
 	      -
 	     / \
-	    *  5
+	    *   5
 	   / \
 	  +   4
 	 / \
