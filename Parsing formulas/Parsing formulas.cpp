@@ -74,15 +74,15 @@ bool isExpression(string expression)
 template <typename T>
 class Stack {
 	//structure defining a stack member
-	template <typename T>
+	//template <typename T>
 	struct StackElement {
 		T Element;
-		StackElement<T>* NextElement;
+		StackElement* NextElement;
 	};
 	//stack head
-	StackElement<T>* Head;
+	StackElement* Head;
 	//element for working with a stack
-	StackElement<T>* CurrentElement;
+	StackElement* CurrentElement;
 	//stack size
 	int StackSize;
 	//recursive function designed to copy the elements of one stack to another
@@ -120,7 +120,7 @@ public:
 	}
 	//adding an item to the stack
 	bool Add(T element) {
-		CurrentElement = new StackElement<T>;
+		CurrentElement = new StackElement;
 		CurrentElement->Element = element;
 		CurrentElement->NextElement = Head;
 		Head = CurrentElement;
