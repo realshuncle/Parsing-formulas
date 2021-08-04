@@ -39,42 +39,49 @@ int isSign(char c)
 bool isExpression(string expression) 
 {
 	string num = "";
-	bool flag = false;
+	//bool flag = false;
 	int par = 0;
 	if (expression[0] == '(')
 		par++;
+	if (isDigit(expression[0]))
+		num += expression[0];
 	for (int i = 1; i < expression.length(); i++) 
 	{
-		if (isDigit(i) || i == '.')
+		if (isDigit(expression[i]) || i == '.')
 		{
-			num += i;
-			flag = true;
-		}
-		else if (flag)
-		{
-			if (!isNumber(num))
-				return 0;
-			flag = false;
-			num = "";
-		}
-		else if (isSign(expression[i]))
-		{
-			if (expression[i] == '(')
-				par++;
-			if (expression[i] == ')')
-				par--;
-			if (
-				isSign(expression[i]) && (isSign(expression[i - 1]) || expression[i - 1] == '(')
-				||
-				expression[i] == ')' && (isSign(expression[i - 1]) || expression[i - 1] == '(')
-				||
-				expression[i] == '(' && (!isSign(expression[i - 1]) && expression[i - 1] != '(')
-				||
-				par < 0)
-				return 0;
+			num += expression[i];
+			//flag = true;
 		}
 		else
-			return 0;
+		{
+			if (num != "" && !isNumber(num))
+				return 0;
+			num = "";
+			/*{
+				if (!isNumber(num))
+					return 0;
+				flag = false;
+				num = "";
+			}*/
+			if (isSign(expression[i]) || expression[i] == '(' || expression[i] == ')')
+			{
+				if (expression[i] == '(')
+					par++;
+				if (expression[i] == ')')
+					par--;
+				if (
+					isSign(expression[i]) && (isSign(expression[i - 1]) || expression[i - 1] == '(')
+					||
+					expression[i] == ')' && (isSign(expression[i - 1]) || expression[i - 1] == '(')
+					||
+					expression[i] == '(' && (!isSign(expression[i - 1]) && expression[i - 1] != '(')
+					||
+					par < 0)
+					return 0;
+			}
+			else
+				return 0;
+		}
 		
 	}
 	if (isSign(expression[expression.length() - 1]) || isSign(expression[0]) || par != 0)
@@ -374,28 +381,22 @@ Stack<string> ExpressionToRPN(string expression) {
 	if (!isExpression(expression))
 		throw "the formula is typed incorrectly! Extra signs are encountered.";
 	string num = "";
-	bool flag = false;
 	for (auto symbol : expression) {
 		if (isDigit(symbol) || symbol == '.')
-		{
 			num += symbol;
-			flag = true;
-		}
 		else
 		{
-			if (flag)
-			{
-				if (!isNumber(num))
-					throw "the formula is typed incorrectly! An unknown symbol was encountered.";
-				operand += num;
-				flag = false;
-				num = "";
-			}
-			if (operand != "")
-			{
-				result.Add(operand);
-				operand = "";
-			}
+			/*if (!isNumber(num))
+				throw "the formula is typed incorrectly! An unknown symbol was encountered.";*/
+			//operand += num;
+			if (num != "")
+				result.Add(num);
+			num = "";
+			//if (operand != "")
+			//{
+			//	result.Add(operand);
+			//	operand = "";
+			//}
 			switch (symbol)
 			{
 			case '+':
@@ -421,30 +422,30 @@ Stack<string> ExpressionToRPN(string expression) {
 					result.Add(string(1, operations.GetHead()));
 					operations.Remove();
 				}
-				if (operations.Size() == 0)
-					throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
-				else
+				//if (operations.Size() == 0)
+				//	throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
+				//else
 					operations.Remove();
 				break;
 			case '(':
 				break;
-			default:
-				if (symbol != ' ')
-					throw "The formula is typed incorrectly! An unknown symbol was encountered.";
-				break;
+			//default:
+			//	if (symbol != ' ')
+			//		throw "The formula is typed incorrectly! An unknown symbol was encountered.";
+			//	break;
 			}
 			if (symbol != ')')
 				operations.Add(symbol);
 			//}
 		}
 	}
-	if (operand != "")
-		result.Add(operand);
+	//if (operand != "")
+	//	result.Add(operand);
 	if (num != "")
 		result.Add(num);
 	while (operations.Size() != 0) {
-		if (operations.GetHead() == '(')
-			throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
+		//if (operations.GetHead() == '(')
+		//	throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
 		result.Add(string(1, operations.GetHead()));
 		operations.Remove();
 	}
@@ -467,8 +468,8 @@ int main()
 		{
 			b = ExpressionToRPN(expression);
 			a.Create(b);
-			b.Print();
-			a.Print();
+			//b.Print();
+			//a.Print();
 			cout << a.Calculate() << endl;
 		}
 		catch (const char* a)
