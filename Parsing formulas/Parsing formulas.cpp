@@ -10,30 +10,34 @@ using namespace std;
 //	return 0;
 //};
 //a function that checks if a character is a number
-bool isNumber(string str) {
+bool isNumber(string str) 
+{
 	bool flag = true;
 	for (auto i : str)
-		if (i >= '0' && i <= '9')
+		if (i < '0' || i > '9')
 			if (i == '.' && flag)
 				flag = false;
 			else
-				return 1;
-	return 0;
+				return 0;
+	return 1;
 }
 //a function that checks if a character is a digit
-bool isDigit(char c) {
+bool isDigit(char c)
+{
 	if (c >= '0' && c <= '9')
 		return 1;
 	return 0;
 }
 //a function that checks if a character is signed
-int isSign(char c) {
+int isSign(char c) 
+{
 	if ((c == '+') || (c == '-') || (c == '*') || (c == '/'))
 		return 1;
 	return 0;
 }
 //expression validator (except for unknown characters and parenthesis mismatch)
-bool isExpression(string expression) {
+bool isExpression(string expression) 
+{
 	string num = "";
 	bool flag = false;
 	for (int i = 1; i < expression.length(); i++) 
@@ -375,9 +379,7 @@ Stack<string> ExpressionToRPN(string expression) {
 				flag = false;
 				num = "";
 			}
-			if (isLetter(symbol) /*|| isDigit(symbol)*/)
-				operand += symbol;
-			else {
+			//else {
 				if (operand != "")
 				{
 					result.Add(operand);
@@ -422,7 +424,7 @@ Stack<string> ExpressionToRPN(string expression) {
 				}
 				if (symbol != ')')
 					operations.Add(symbol);
-			}
+			//}
 		}
 	}
 	if (operand != "")
