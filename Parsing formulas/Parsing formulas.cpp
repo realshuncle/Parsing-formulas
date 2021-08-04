@@ -46,7 +46,7 @@ bool isExpression(string expression)
 		num += expression[0];
 	for (int i = 1; i < expression.length(); i++) 
 	{
-		if (isDigit(expression[i]) || i == '.')
+		if (isDigit(expression[i]) || expression[i] == '.')
 			num += expression[i];
 		else
 		{
