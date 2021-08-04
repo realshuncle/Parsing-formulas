@@ -39,7 +39,6 @@ int isSign(char c)
 bool isExpression(string expression) 
 {
 	string num = "";
-	//bool flag = false;
 	int par = 0;
 	if (expression[0] == '(')
 		par++;
@@ -48,21 +47,12 @@ bool isExpression(string expression)
 	for (int i = 1; i < expression.length(); i++) 
 	{
 		if (isDigit(expression[i]) || i == '.')
-		{
 			num += expression[i];
-			//flag = true;
-		}
 		else
 		{
 			if (num != "" && !isNumber(num))
 				return 0;
 			num = "";
-			/*{
-				if (!isNumber(num))
-					return 0;
-				flag = false;
-				num = "";
-			}*/
 			if (isSign(expression[i]) || expression[i] == '(' || expression[i] == ')')
 			{
 				if (expression[i] == '(')
@@ -93,7 +83,6 @@ bool isExpression(string expression)
 template <typename T>
 class Stack {
 	//structure defining a stack member
-	//template <typename T>
 	struct StackElement {
 		T Element;
 		StackElement* NextElement;
@@ -315,7 +304,6 @@ class TreeFormula : public BinaryTree<string>
 		double right, left;
 		TreeNode* node = CurrentNode;
 		if (node->Left == NULL)
-			//return stoi(node->Field);
 			return stod(node->Field);
 		CurrentNode = node->Left;
 		left = CalcTree();
@@ -332,17 +320,6 @@ class TreeFormula : public BinaryTree<string>
 		case '/':
 			return left / right;
 		}
-
-	}
-	int stoi(string s)
-	{
-		int number = 0;
-		for (auto symbol : s)
-			if (symbol >= '0' && symbol <= '9')
-				number = number * 10 + (symbol - '0');
-			else
-				throw "The tree is not a numeric expression, no calculations can be made.";
-		return number;
 	}
 	
 public:
@@ -379,24 +356,16 @@ Stack<string> ExpressionToRPN(string expression) {
 		}
 	}
 	if (!isExpression(expression))
-		throw "the formula is typed incorrectly! Extra signs are encountered.";
+		throw "The formula is typed incorrectly!";
 	string num = "";
 	for (auto symbol : expression) {
 		if (isDigit(symbol) || symbol == '.')
 			num += symbol;
 		else
 		{
-			/*if (!isNumber(num))
-				throw "the formula is typed incorrectly! An unknown symbol was encountered.";*/
-			//operand += num;
 			if (num != "")
 				result.Add(num);
 			num = "";
-			//if (operand != "")
-			//{
-			//	result.Add(operand);
-			//	operand = "";
-			//}
 			switch (symbol)
 			{
 			case '+':
@@ -405,7 +374,6 @@ Stack<string> ExpressionToRPN(string expression) {
 				{
 					result.Add(string(1, operations.GetHead()));
 					operations.Remove();
-
 				}
 				break;
 			case '*':
@@ -422,30 +390,19 @@ Stack<string> ExpressionToRPN(string expression) {
 					result.Add(string(1, operations.GetHead()));
 					operations.Remove();
 				}
-				//if (operations.Size() == 0)
-				//	throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
-				//else
 					operations.Remove();
 				break;
 			case '(':
 				break;
-			//default:
-			//	if (symbol != ' ')
-			//		throw "The formula is typed incorrectly! An unknown symbol was encountered.";
-			//	break;
 			}
 			if (symbol != ')')
 				operations.Add(symbol);
-			//}
 		}
 	}
-	//if (operand != "")
-	//	result.Add(operand);
+
 	if (num != "")
 		result.Add(num);
 	while (operations.Size() != 0) {
-		//if (operations.GetHead() == '(')
-		//	throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
 		result.Add(string(1, operations.GetHead()));
 		operations.Remove();
 	}
@@ -460,16 +417,21 @@ int main()
 
 	while (true) 
 	{
-		cout << "Enter a formula or \"exit\" to exit." << endl;
+		cout << "Enter a formula or command: \"exit\", \"help\"." << endl;
 		getline(cin, expression);
+		if (expression == "help")
+		{
+			cout << "This program is designed to calculate simple formulas."  << endl
+				<< "There is support for the operations: \"+\", \"-\", \"*\", \"/\", as well as parentheses: \"(\", \")\"."
+				<< endl << "Both whole numbers and decimal fractions can be used as operands." << endl;
+			continue;
+		}
 		if (expression == "exit")
 			break;
 		try
 		{
 			b = ExpressionToRPN(expression);
 			a.Create(b);
-			//b.Print();
-			//a.Print();
 			cout << a.Calculate() << endl;
 		}
 		catch (const char* a)
