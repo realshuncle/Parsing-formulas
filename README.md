@@ -35,4 +35,4 @@ Then we build the tree recursively:
 	 / \
 	2   3
 
-After thet we calculate formula.
+After then we calculate formula.
