@@ -25,10 +25,10 @@ For instance, we have formla: (2 + 3) * 4 - 5.
 We translate it to the reverse Polish notation: 13+4*5-.
 Then we build the tree recursively:
 
-	   -
-	  / \
-	 *  d
-	/ \
-+   c
-/ \
-a   b
+	      -
+	     / \
+	    *  d
+	   / \
+	  +   c
+	 / \
+	a   b
