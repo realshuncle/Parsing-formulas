@@ -21,8 +21,8 @@ Data structures were also implemented:
 * stack
 
 For parsing the formula, an algorithm was used to translate the formula into a reverse Polish notation, followed by its entry into a binary tree.
-For instance, we have formla: (2 + 3) * 4 - 5.
-We translate it to the reverse Polish notation: 13+4*5-.
+For instance, let we have formula: (2 + 3) * 4 - 5.
+First, we translate it to the reverse Polish notation: 13+4*5-.
 Then we build the tree recursively:
 
 	      -
@@ -32,3 +32,5 @@ Then we build the tree recursively:
 	  +   c
 	 / \
 	a   b
+
+After thet we calculate formula.
