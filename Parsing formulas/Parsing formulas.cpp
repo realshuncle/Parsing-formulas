@@ -4,11 +4,11 @@
 using namespace std;
 
 //a function that checks if a character is a Latin letter
-bool isLetter(char c) {
-	if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
-		return 1;
-	return 0;
-};
+//bool isLetter(char c) {
+//	if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z')
+//		return 1;
+//	return 0;
+//};
 //a function that checks if a character is a number
 bool isNumber(string str) {
 	bool flag = true;
@@ -461,7 +461,6 @@ int main()
 		catch (const char* a)
 		{
 			cout << a << endl;
-			continue;
 		}
 	}
 	return 0;
