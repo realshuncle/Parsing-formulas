@@ -11,8 +11,12 @@ bool isLetter(char c) {
 };
 //a function that checks if a character is a digit
 bool isNumeral(char c) {
+	bool flag = true;
 	if (c >= '0' && c <= '9')
-		return 1;
+		if (c == '.' && flag)
+			flag = false;
+		else
+			return 1;
 	return 0;
 };
 //a function that checks if a character is signed
