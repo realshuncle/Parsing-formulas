@@ -40,6 +40,9 @@ bool isExpression(string expression)
 {
 	string num = "";
 	bool flag = false;
+	int par = 0;
+	if (expression[0] == '(')
+		par++;
 	for (int i = 1; i < expression.length(); i++) 
 	{
 		if (isDigit(i) || i == '.')
@@ -54,18 +57,27 @@ bool isExpression(string expression)
 			flag = false;
 			num = "";
 		}
-		else if (
-			isSign(expression[i]) && (isSign(expression[i - 1])	||	expression[i - 1] == '(')
-			||
-			expression[i] == ')' && (isSign(expression[i - 1])	||	expression[i - 1] == '(')
-			||
-			expression[i] == '(' && (!isSign(expression[i - 1]) && expression[i - 1] != '(')
-			// ||
-			//(isNumeral(expression[i]) || isLetter(expression[i])) && expression[i - 1] == ')'
-			)
+		else if (isSign(expression[i]))
+		{
+			if (expression[i] == '(')
+				par++;
+			if (expression[i] == ')')
+				par--;
+			if (
+				isSign(expression[i]) && (isSign(expression[i - 1]) || expression[i - 1] == '(')
+				||
+				expression[i] == ')' && (isSign(expression[i - 1]) || expression[i - 1] == '(')
+				||
+				expression[i] == '(' && (!isSign(expression[i - 1]) && expression[i - 1] != '(')
+				||
+				par < 0)
+				return 0;
+		}
+		else
 			return 0;
+		
 	}
-	if (isSign(expression[expression.length() - 1]) || isSign(expression[0]))
+	if (isSign(expression[expression.length() - 1]) || isSign(expression[0]) || par != 0)
 		return 0;
 	return 1;
 }
@@ -379,51 +391,50 @@ Stack<string> ExpressionToRPN(string expression) {
 				flag = false;
 				num = "";
 			}
-			//else {
-				if (operand != "")
+			if (operand != "")
+			{
+				result.Add(operand);
+				operand = "";
+			}
+			switch (symbol)
+			{
+			case '+':
+			case '-':
+				while (operations.Size() != 0 && operations.GetHead() != '(')
 				{
-					result.Add(operand);
-					operand = "";
-				}
-				switch (symbol)
-				{
-				case '+':
-				case '-':
-					while (operations.Size() != 0 && operations.GetHead() != '(')
-					{
-						result.Add(string(1, operations.GetHead()));
-						operations.Remove();
+					result.Add(string(1, operations.GetHead()));
+					operations.Remove();
 
-					}
-					break;
-				case '*':
-				case '/':
-					while (operations.Size() != 0 && operations.GetHead() == '*')
-					{
-						result.Add(string(1, operations.GetHead()));
-						operations.Remove();
-					}
-					break;
-				case ')':
-					while (operations.Size() != 0 && operations.GetHead() != '(')
-					{
-						result.Add(string(1, operations.GetHead()));
-						operations.Remove();
-					}
-					if (operations.Size() == 0)
-						throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
-					else
-						operations.Remove();
-					break;
-				case '(':
-					break;
-				default:
-					if (symbol != ' ')
-						throw "The formula is typed incorrectly! An unknown symbol was encountered.";
-					break;
 				}
-				if (symbol != ')')
-					operations.Add(symbol);
+				break;
+			case '*':
+			case '/':
+				while (operations.Size() != 0 && (operations.GetHead() == '*' || operations.GetHead() == '/'))
+				{
+					result.Add(string(1, operations.GetHead()));
+					operations.Remove();
+				}
+				break;
+			case ')':
+				while (operations.Size() != 0 && operations.GetHead() != '(')
+				{
+					result.Add(string(1, operations.GetHead()));
+					operations.Remove();
+				}
+				if (operations.Size() == 0)
+					throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
+				else
+					operations.Remove();
+				break;
+			case '(':
+				break;
+			default:
+				if (symbol != ' ')
+					throw "The formula is typed incorrectly! An unknown symbol was encountered.";
+				break;
+			}
+			if (symbol != ')')
+				operations.Add(symbol);
 			//}
 		}
 	}
