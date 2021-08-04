@@ -75,9 +75,11 @@ bool isExpression(string expression)
 
 //stack
 template <typename T>
-class Stack {
+class Stack 
+{
 	//structure defining a stack member
-	struct StackElement {
+	struct StackElement 
+	{
 		T Element;
 		StackElement* NextElement;
 	};
@@ -88,8 +90,10 @@ class Stack {
 	//stack size
 	int StackSize;
 	//recursive function designed to copy the elements of one stack to another
-	void Copy() {
-		if (CurrentElement != NULL) {
+	void Copy() 
+	{
+		if (CurrentElement != NULL) 
+		{
 			T temp = CurrentElement->Element;
 			CurrentElement = CurrentElement->NextElement;
 			Copy();
@@ -99,21 +103,25 @@ class Stack {
 
 public:
 	//default stack constructor
-	Stack() {
+	Stack() 
+	{
 		Head = NULL;
 		CurrentElement = NULL;
 		StackSize = 0;
 	}
 	//stack copy constructor
-	Stack(const Stack& s2) {
+	Stack(const Stack& s2) 
+	{
 		Head = NULL;
 		StackSize = 0;
 		CurrentElement = s2.Head;
 		Copy();
 	}
 	//stack destructor
-	~Stack() {
-		while (Head != NULL) {
+	~Stack() 
+	{
+		while (Head != NULL) 
+		{
 			CurrentElement = Head;
 			Head = Head->NextElement;
 			delete CurrentElement;
@@ -121,7 +129,8 @@ public:
 		}
 	}
 	//adding an item to the stack
-	bool Add(T element) {
+	bool Add(T element) 
+	{
 		CurrentElement = new StackElement;
 		CurrentElement->Element = element;
 		CurrentElement->NextElement = Head;
@@ -130,7 +139,8 @@ public:
 		return true;
 	}
 	//removing an item from to the stack
-	bool Remove() {
+	bool Remove() 
+	{
 		if (Head == NULL)
 			return false;
 		CurrentElement = Head;
@@ -140,9 +150,11 @@ public:
 		return true;
 	}
 	//searching for an item on the stack
-	bool Find(T element) {
+	bool Find(T element) 
+	{
 		CurrentElement = Head;
-		while (CurrentElement != NULL) {
+		while (CurrentElement != NULL) 
+		{
 			if (CurrentElement->Element == element)
 				return true;
 			CurrentElement = CurrentElement->NextElement;
@@ -150,20 +162,24 @@ public:
 		return false;
 	}
 	//outputting stack items to the console
-	void Print() {
+	void Print() 
+	{
 		CurrentElement = Head;
-		while (CurrentElement != NULL) {
+		while (CurrentElement != NULL) 
+		{
 			cout << CurrentElement->Element << " ";
 			CurrentElement = CurrentElement->NextElement;
 		}
 		cout << endl;
 	}
 	//function that returns the size of the stack
-	int Size() {
+	int Size() 
+	{
 		return StackSize;
 	}
 	//function that returns the top element of the stack
-	T GetHead() {
+	T GetHead() 
+	{
 		if (Head != NULL)
 			return Head->Element;
 		return 0;
@@ -187,7 +203,8 @@ protected:
 	struct TreeNode 
 	{
 		//tree node constructor
-		TreeNode(T item, TreeNode* l = NULL, TreeNode* r = NULL) {
+		TreeNode(T item, TreeNode* l = NULL, TreeNode* r = NULL) 
+		{
 			Field = item;
 			Left = l;
 			Right = r;
@@ -317,11 +334,13 @@ class TreeFormula : public BinaryTree<string>
 	}
 	
 public:
-	void Create(Stack<string> expression) {
+	void Create(Stack<string> expression) 
+	{
 		CurrentNode = Root;
 		DeleteTree();
 		Root = 0;
-		while (expression.Size() != 0) {
+		while (expression.Size() != 0) 
+		{
 			CurrentNode = Root;
 			Add(expression.GetHead());
 			expression.Remove();
@@ -335,7 +354,8 @@ public:
 };
 
 //a function that converts from standard expression notation to Polish reverse notation
-Stack<string> ExpressionToRPN(string expression) {
+Stack<string> ExpressionToRPN(string expression) 
+{
 	//string for storing the operands of the expression
 	string operand = "";
 	//stack in which the operations are stored
@@ -344,7 +364,8 @@ Stack<string> ExpressionToRPN(string expression) {
 	Stack<string> result;
 	for (int i = 0; i < expression.length(); i++)
 	{
-		if (expression[i] == ' ') {
+		if (expression[i] == ' ') 
+		{
 			expression.erase(i, 1);
 			i--;
 		}
@@ -352,7 +373,8 @@ Stack<string> ExpressionToRPN(string expression) {
 	if (!isExpression(expression))
 		throw "The formula is typed incorrectly!";
 	string num = "";
-	for (auto symbol : expression) {
+	for (auto symbol : expression) 
+	{
 		if (isDigit(symbol) || symbol == '.')
 			num += symbol;
 		else
@@ -396,7 +418,8 @@ Stack<string> ExpressionToRPN(string expression) {
 
 	if (num != "")
 		result.Add(num);
-	while (operations.Size() != 0) {
+	while (operations.Size() != 0) 
+	{
 		result.Add(string(1, operations.GetHead()));
 		operations.Remove();
 	}
