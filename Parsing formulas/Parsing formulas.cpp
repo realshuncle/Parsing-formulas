@@ -9,33 +9,55 @@ bool isLetter(char c) {
 		return 1;
 	return 0;
 };
-//a function that checks if a character is a digit
-bool isNumeral(char c) {
+//a function that checks if a character is a number
+bool isNumber(string str) {
 	bool flag = true;
-	if (c >= '0' && c <= '9')
-		if (c == '.' && flag)
-			flag = false;
-		else
-			return 1;
+	for (auto i : str)
+		if (i >= '0' && i <= '9')
+			if (i == '.' && flag)
+				flag = false;
+			else
+				return 1;
 	return 0;
-};
+}
+//a function that checks if a character is a digit
+bool isDigit(char c) {
+	if (c >= '0' && c <= '9')
+		return 1;
+	return 0;
+}
 //a function that checks if a character is signed
 int isSign(char c) {
-	if ((c == '+') || (c == '-') || (c == '*'))
+	if ((c == '+') || (c == '-') || (c == '*') || (c == '/'))
 		return 1;
 	return 0;
 }
 //expression validator (except for unknown characters and parenthesis mismatch)
 bool isExpression(string expression) {
-	for (int i = 1; i < expression.length(); i++) {
-		if (
-			isSign(expression[i]) && (isSign(expression[i - 1]) || expression[i - 1] == '(')
+	string num = "";
+	bool flag = false;
+	for (int i = 1; i < expression.length(); i++) 
+	{
+		if (isDigit(i) || i == '.')
+		{
+			num += i;
+			flag = true;
+		}
+		else if (flag)
+		{
+			if (!isNumber(num))
+				return 0;
+			flag = false;
+			num = "";
+		}
+		else if (
+			isSign(expression[i]) && (isSign(expression[i - 1])	||	expression[i - 1] == '(')
 			||
-			expression[i] == ')' && (isSign(expression[i - 1]) || expression[i - 1] == '(')
+			expression[i] == ')' && (isSign(expression[i - 1])	||	expression[i - 1] == '(')
 			||
 			expression[i] == '(' && (!isSign(expression[i - 1]) && expression[i - 1] != '(')
-			||
-			(isNumeral(expression[i]) || isLetter(expression[i])) && expression[i - 1] == ')'
+			// ||
+			//(isNumeral(expression[i]) || isLetter(expression[i])) && expression[i - 1] == ')'
 			)
 			return 0;
 	}
@@ -265,12 +287,13 @@ class TreeFormula : public BinaryTree<string>
 			node->Status = 1;
 		return node;
 	}
-	int CalcTree() 
+	double CalcTree() 
 	{
-		int right, left;
+		double right, left;
 		TreeNode* node = CurrentNode;
 		if (node->Left == NULL)
-			return stoi(node->Field);
+			//return stoi(node->Field);
+			return stod(node->Field);
 		CurrentNode = node->Left;
 		left = CalcTree();
 		CurrentNode = node->Right;
@@ -283,6 +306,8 @@ class TreeFormula : public BinaryTree<string>
 			return left - right;
 		case '*':
 			return left * right;
+		case '/':
+			return left / right;
 		}
 
 	}
@@ -308,7 +333,7 @@ public:
 			expression.Remove();
 		}
 	}
-	int Calculate()
+	double Calculate()
 	{
 		CurrentNode = Root;
 		return CalcTree();
@@ -332,57 +357,78 @@ Stack<string> ExpressionToRPN(string expression) {
 	}
 	if (!isExpression(expression))
 		throw "the formula is typed incorrectly! Extra signs are encountered.";
+	string num = "";
+	bool flag = false;
 	for (auto symbol : expression) {
-		if (isLetter(symbol) || isNumeral(symbol))
-			operand += symbol;
-		else {
-			if (operand != "") 
+		if (isDigit(symbol) || symbol == '.')
+		{
+			num += symbol;
+			flag = true;
+		}
+		else
+		{
+			if (flag)
 			{
-				result.Add(operand);
-				operand = "";
+				if (!isNumber(num))
+					throw "the formula is typed incorrectly! An unknown symbol was encountered.";
+				operand += num;
+				flag = false;
+				num = "";
 			}
-			switch (symbol)
-			{
-			case '+':
-			case '-':
-				while (operations.Size() != 0 && operations.GetHead() != '(') 
+			if (isLetter(symbol) /*|| isDigit(symbol)*/)
+				operand += symbol;
+			else {
+				if (operand != "")
 				{
-					result.Add(string(1, operations.GetHead()));
-					operations.Remove();
+					result.Add(operand);
+					operand = "";
+				}
+				switch (symbol)
+				{
+				case '+':
+				case '-':
+					while (operations.Size() != 0 && operations.GetHead() != '(')
+					{
+						result.Add(string(1, operations.GetHead()));
+						operations.Remove();
 
+					}
+					break;
+				case '*':
+				case '/':
+					while (operations.Size() != 0 && operations.GetHead() == '*')
+					{
+						result.Add(string(1, operations.GetHead()));
+						operations.Remove();
+					}
+					break;
+				case ')':
+					while (operations.Size() != 0 && operations.GetHead() != '(')
+					{
+						result.Add(string(1, operations.GetHead()));
+						operations.Remove();
+					}
+					if (operations.Size() == 0)
+						throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
+					else
+						operations.Remove();
+					break;
+				case '(':
+					break;
+				default:
+					if (symbol != ' ')
+						throw "The formula is typed incorrectly! An unknown symbol was encountered.";
+					break;
 				}
-				break;
-			case '*':
-				while (operations.Size() != 0 && operations.GetHead() == '*') 
-				{
-					result.Add(string(1, operations.GetHead()));
-					operations.Remove();
-				}
-				break;
-			case ')':
-				while (operations.Size() != 0 && operations.GetHead() != '(') 
-				{
-					result.Add(string(1, operations.GetHead()));
-					operations.Remove();
-				}
-				if (operations.Size() == 0)
-					throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
-				else
-					operations.Remove();
-				break;
-			case '(':
-				break;
-			default:
-				if (symbol != ' ')
-					throw "The formula is typed incorrectly! An unknown symbol was encountered.";
-				break;
+				if (symbol != ')')
+					operations.Add(symbol);
 			}
-			if (symbol != ')')
-				operations.Add(symbol);
 		}
 	}
 	if (operand != "")
 		result.Add(operand);
+	if (num != "")
+		result.Add(num);
 	while (operations.Size() != 0) {
 		if (operations.GetHead() == '(')
 			throw "The formula is typed incorrectly! Open and close parentheses mismatch.";
